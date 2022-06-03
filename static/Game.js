@@ -1,0 +1,47 @@
+class Game {
+    constructor() {
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(
+        45,
+        innerWidth / innerHeight,
+        0.1,
+        10000
+      );
+      this.camera.position.set(0, 2000, 0);
+      this.camera.lookAt(this.scene.position);
+      this.renderer = new THREE.WebGLRenderer();
+      this.renderer.setClearColor(0x000000);
+      this.renderer.setSize(window.innerWidth - 30, window.innerHeight - 40);
+      this.axes = new THREE.AxesHelper(1000);
+      this.scene.add(this.axes);
+      this.raycaster = new THREE.Raycaster();
+      this.mouseVector = new THREE.Vector2()
+      document.getElementById("root").append(this.renderer.domElement);
+  
+      this.render(); // wywołanie metody render
+    }
+  
+    render = () => {
+      requestAnimationFrame(this.render);
+      console.log("render leci");
+    };
+    resize = () => {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    detect = (positionX, positionY) => {
+      let mouseVector = new Object()
+      mouseVector.x = positionX
+      mouseVector.y = positionY
+      this.raycaster.setFromCamera(mouseVector, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.scene.children);
+      ////console.log(intersects.length)
+      if (intersects.length > 0 && this.started && this.allow) {
+        // ////console.log(intersects[0].object);
+        this.checkPawn(intersects)
+        this.checkSquare(intersects)
+      }
+    }
+  }
+  
