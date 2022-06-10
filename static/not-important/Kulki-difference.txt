@@ -1,0 +1,6 @@
+Kulki-new
+Możesz kłaść i zamieniać kulki po całej planszy
+
+Kulki-classic
+Możesz kłaść tylko jeśli obok jest inna kulka
+Możesz zamieniać tylko sąsiadujące

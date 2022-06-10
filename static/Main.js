@@ -5,5 +5,5 @@ window.onload = () => {
   game = new Game();
   net = new Net();
   ui = new Ui();
-  window.onresize = game.resize();
+  //window.onresize = game.resize();
 };
