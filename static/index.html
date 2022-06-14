@@ -30,10 +30,10 @@
     ui.showStart()
   });
 
-  socket.on('moveReturned', function(tab){
+  socket.on('moveReturned', function(tab, move){
     console.log("Move returned")
     console.log(tab)
-    game.regenerate(tab)
+    game.regenerate(tab, move)
   })
 </script>
 

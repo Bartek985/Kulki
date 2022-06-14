@@ -11,6 +11,7 @@ class Net {
               if(data.error == "none"){
                 ui.hideLogin()
                 game.shuffleCards(data.card)
+                game.setStarter(data.start)
               }
               else if(data.error == "many"){
                 ui.showErrorMany()

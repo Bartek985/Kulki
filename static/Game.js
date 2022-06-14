@@ -49,6 +49,7 @@ class Game {
     this.buggedColor = null;
     this.started = false;
     this.onBoard = []
+    this.start = false
 
 
     //this.player1turn = true;
@@ -162,7 +163,8 @@ class Game {
 
 
   clickOnSth = (e) => {
-    if(this.started){
+    console.log(this.start, this.move)
+    if(this.started && ((this.start && this.move%2 == 0) || (!this.start && this.move%2 == 1))){
       
     if (this.bug) {
       this.piecesOnBoard[this.bugIndeX][this.bugIndeZ] = this.buggedColor;
@@ -197,7 +199,7 @@ class Game {
                 this.piecesOnBoard[indeX2][indeZ2] = clickedItem.userData.colorValue;
                 this.move += 1;//zniana, kolej drugiego gracza
                 console.log("ruch nr." + this.move, this.piecesOnBoard);
-                socket.emit('moveWasMade', this.piecesOnBoard);
+                socket.emit('moveWasMade', this.piecesOnBoard, this.move);
               }
               else{
                 console.log("bug handled");
@@ -269,7 +271,7 @@ class Game {
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
-              socket.emit('moveWasMade', this.piecesOnBoard);
+              socket.emit('moveWasMade', this.piecesOnBoard, this.move);
             } if ((indeX == 0 && this.piecesOnBoard[indeX + 1][indeZ] > 0) || (indeX == 6 && this.piecesOnBoard[indeX - 1][indeZ] > 0) || (indeZ == 0 && this.piecesOnBoard[indeX][indeZ + 1] > 0) || (indeZ == 6 && this.piecesOnBoard[indeX][indeZ - 1] > 0) && (this.currentClicked.object.position.x != clickedItem.position.x || this.currentClicked.object.position.z != clickedItem.position.z)) {
               new TWEEN.Tween(this.camera.position) // co
                 .to({ x: 240, y: 240 }, 750) // do jakiej pozycji, w jakim czasie
@@ -288,7 +290,7 @@ class Game {
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
-              socket.emit('moveWasMade', this.piecesOnBoard);
+              socket.emit('moveWasMade', this.piecesOnBoard, this.move);
             }
           }
         }
@@ -314,7 +316,7 @@ class Game {
     this.started = !this.started
   }
 
-  regenerate = (tab)=>{
+  regenerate = (tab, move)=>{
     this.onBoard.forEach((elem)=>{
       this.scene.remove(elem)
     })
@@ -338,6 +340,15 @@ class Game {
       }
     }
 
+    console.log(move)
+    if(this.move != move){
+      this.move++
+    }
+
+  }
+
+  setStarter = (start) =>{
+    this.start = start
   }
   
 }
