@@ -37,6 +37,14 @@ class Ui {
         document.getElementById('waiting').style.display = "none"
         document.getElementById('start-info').style.display = "none"
     }
+
+    win = ()=>{
+        document.getElementById('winner').style.display = "block"
+    }
+
+    lose = ()=>{
+        document.getElementById('loser').style.display = "block"
+    }
     
 }
   

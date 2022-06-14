@@ -35,6 +35,12 @@
     console.log(tab)
     game.regenerate(tab, move)
   })
+  
+  socket.on('victory', function(winner){
+    console.log("Move returned")
+    game.decide(winner)
+    game.editGame()
+  })
 </script>
 
 <body>
@@ -59,6 +65,12 @@
   </div>
   <div id="start-info" class="info">
     Game started
+  </div>
+  <div id="winner" class="info">
+    You won!
+  </div>
+  <div id="loser" class="info">
+    You lost :(
   </div>
 </body>
 

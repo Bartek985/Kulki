@@ -351,5 +351,14 @@ class Game {
   setStarter = (start) =>{
     this.start = start
   }
+
+  decide = (winner) =>{
+    if(winner == this.myCard){
+      ui.win()
+    }
+    else{
+      ui.lose()
+    }
+  }
   
 }

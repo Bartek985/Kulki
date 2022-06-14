@@ -7,8 +7,8 @@ app.use(express.static("static"));
 const Datastore = require('nedb')
 
 const coll1 = new Datastore({
-    filename: 'kolekcja.db',
-    autoload: true
+  filename: 'kolekcja.db',
+  autoload: true
 });
 
 const http = require('http');
@@ -21,6 +21,7 @@ let cards = ["blue1", "blue2", "blue3", "blue4","red1", "red2", "red3", "red4","
 let firstCard = ""
 let secondCard = ""
 let starter = false
+let victory = false
 
 function shuffle(array) {
   let currentIndex = array.length,  randomIndex;
@@ -38,6 +39,85 @@ function shuffle(array) {
   }
 
   return array;
+}
+
+function checkPosition(tab, i, j, v, antiColor, cycle, black){
+  // console.log(i, j, v, antiColor, cycle, black)
+  if(parseInt(v[cycle])==1 && i>0){
+    if(tab[i-1][j] != 0 && tab[i-1][j] != antiColor ){
+      if(cycle == 5 && black == true){
+        victory = true
+        return true
+      }
+      else{
+        if(tab[i][j]!=6){
+          checkPosition(tab, i-1, j, v, antiColor, cycle+1, black)
+        }
+        else{
+          checkPosition(tab, i-1, j, v, antiColor, cycle+1, true)
+        }
+      }
+    }
+  }
+  else if(parseInt(v[cycle])==2 && j<6){
+    if(tab[i][j+1] != 0 && tab[i][j+1] != antiColor ){
+      if(cycle == 5 && black == true){
+        victory = true
+        return true
+      }
+      else{
+        if(tab[i][j]!=6){
+          checkPosition(tab, i, j+1, v, antiColor, cycle+1, black)
+        }
+        else{
+          checkPosition(tab, i, j+1, v, antiColor, cycle+1, true)
+        }
+      }
+    }
+  }
+  else if(parseInt(v[cycle])==3 && i<6){
+    if(tab[i+1][j] != 0 && tab[i+1][j] != antiColor ){
+      if(cycle == 5 && black == true){
+        victory = true
+        return true
+      }
+      else{
+        if(tab[i][j]!=6){
+          checkPosition(tab, i+1, j, v, antiColor, cycle+1, black)
+        }
+        else{
+          checkPosition(tab, i+1, j, v, antiColor, cycle+1, true)
+        }
+      }
+    }
+  }
+  else if(parseInt(v[cycle])==4 && j>0){
+    if(tab[i][j-1] != 0 && tab[i][j-1] != antiColor ){
+      if(cycle == 5 && black == true){
+        victory = true
+        return true
+      }
+      else{
+        if(tab[i][j]!=6){
+          checkPosition(tab, i, j-1, v, antiColor, cycle+1, black)
+        }
+        else{
+          checkPosition(tab, i, j-1, v, antiColor, cycle+1, true)
+        }
+      }
+    }
+  }
+  else{
+    console.log(v[cycle])
+    if(parseInt(v[cycle]) == 0){
+      console.log("TRRRRRRRRUUUUUUUUEEEEEEEE")
+      victory = true
+      return true
+    }
+    else{
+      return false
+    }
+  }
 }
 
 app.get("/", function (req, res) {
@@ -72,12 +152,88 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('moveWasMade', (tab, move, card) => {
     console.log('Move');
+    let momentTab = []
+    let antiColor = 0
+
     coll1.findOne({ name: card }, function (err, doc) {
-      console.log("----- obiekt pobrany z bazy: ",doc)
-      console.log("----- formatowanie obiektu js na format JSON: ")
-      console.log(JSON.stringify(doc, null, 5))
-      });
+      // console.log("----- obiekt pobrany z bazy: ",doc)
+      // console.log("----- formatowanie obiektu js na format JSON: ")
+      // console.log(JSON.stringify(doc, null, 5))
+      momentTab.push(doc.v1)
+      momentTab.push(doc.v2)
+      momentTab.push(doc.v3)
+      momentTab.push(doc.v4)
+      momentTab.push(doc.v5)
+      momentTab.push(doc.v6)
+      switch(doc.color){
+        case "blue":
+          antiColor = 1
+          break;
+        case "green":
+          antiColor = 2
+          break;
+        case "orange":
+          antiColor = 3
+          break;
+        case "red":
+          antiColor = 4
+          break;
+      }
+
+      
+    
+    for (let i=0; i<tab.length; i++){
+      for (let j=0; j<tab[i].length; j++){
+        if(tab[i][j] != 0){
+          if(checkPosition(tab, i, j, momentTab, antiColor, 0, false) == true){
+            victory = true
+          }
+          momentTab.forEach((elem)=>{
+            if(elem == "4"){
+              elem = 1
+            }
+            else{
+              elem = `${(parseInt(elem)+1)}`
+            }
+          })
+          if(checkPosition(tab, i, j, momentTab, antiColor, 0, false) == true){
+            victory = true
+          }
+          momentTab.forEach((elem)=>{
+            if(elem == "4"){
+              elem = 1
+            }
+            else{
+              elem = `${(parseInt(elem)+1)}`
+            }
+          })
+          if(checkPosition(tab, i, j, momentTab, antiColor, 0, false) == true){
+            victory = true
+          }
+          momentTab.forEach((elem)=>{
+            if(elem == "4"){
+              elem = 1
+            }
+            else{
+              elem = `${(parseInt(elem)+1)}`
+            }
+          })
+          if(checkPosition(tab, i, j, momentTab, antiColor, 0, false) == true){
+            victory = true
+          }
+        }
+      }
+    }
+
+    console.log(victory)
+
     io.emit('moveReturned', tab, move)
+
+    if(victory == true){
+      io.emit('victory', doc.name)
+    }
+    });
+
   });
 });
 
@@ -119,6 +275,7 @@ app.post('/RESET', (req,res)=>{
   firstCard = ""
   secondCard = ""
   starter = false
+  victory = false
   res.end()
 })
 
