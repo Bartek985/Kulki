@@ -10,6 +10,7 @@ class Net {
               console.log(data.error);
               if(data.error == "none"){
                 ui.hideLogin()
+                game.shuffleCards(data.card)
               }
               else if(data.error == "many"){
                 ui.showErrorMany()

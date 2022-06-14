@@ -24,7 +24,7 @@
   var socket = io();
 
   
-  socket.on('gameStarted', function(msg) {
+  socket.on('gameStarted', function(cards) {
     console.log("Game started")
     game.editGame()
     ui.showStart()

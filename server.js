@@ -11,6 +11,9 @@ const io = new Server(server);
 
 let usersTab = []
 let cards = ["blue1", "blue2", "blue3", "blue4","red1", "red2", "red3", "red4","green1", "green2", "green3", "green4","orange1", "orange2", "orange3", "orange4"];
+let firstCard = ""
+let secondCard = ""
+
 function shuffle(array) {
   let currentIndex = array.length,  randomIndex;
 
@@ -54,16 +57,22 @@ app.post("/LOG_IN", function (req,res) {
     usersTab.push(user)
     shuffle(cards)
     res.send(JSON.stringify({error: "none", card: cards[cards.length-1], user: user}))
-    cards.pop()
     if(usersTab.length == 2){
-      io.emit('gameStarted', "LOL");
+      secondCard = cards[cards.length-1]
+      io.emit('gameStarted', [firstCard, secondCard]);
     }
+    else{
+      firstCard = cards[cards.length-1]
+    }
+    cards.pop()
   }
 })
 
 app.post('/RESET', (req,res)=>{
   usersTab = []
   cards = ["blue1", "blue2", "blue3", "blue4","red1", "red2", "red3", "red4","green1", "green2", "green3", "green4","orange1", "orange2", "orange3", "orange4"];
+  firstCard = ""
+  secondCard = ""
   res.end()
 })
 

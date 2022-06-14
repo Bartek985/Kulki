@@ -32,6 +32,8 @@ class Game {
     //   number: ["1", "2", "3", "4"],
     //   fileType: ".jpg"
     // };
+    this.randomCardPlayer1 = ""
+    this.cardsInterval = null
     // this.randomCardPlayer1 = this.cards.color[Math.floor(Math.random() * 4)] + this.cards.number[Math.floor(Math.random() * 4)] + this.cards.fileType;
     /*this.randomCardPlayer2 = this.cards.color[Math.floor(Math.random() * (12 - 8))] + this.cards.number[Math.floor(Math.random() * (29 - 25))] + this.cards.fileType;
     while (this.randomCardPlayer2 == this.randomCardPlayer1) {
@@ -75,11 +77,11 @@ class Game {
     light1.intensity = 0.9;
     this.scene.add(light1);
 
-    var Nigger = new Piece(6);
-    var nigga = Nigger.createGeometry();
-    nigga.userData = { colorValue: 6 };
-    nigga.position.set(0, 5, 0);
-    this.scene.add(nigga);
+    var BlackSphere = new Piece(6);
+    var black = BlackSphere.createGeometry();
+    black.userData = { colorValue: 6 };
+    black.position.set(0, 5, 0);
+    this.scene.add(black);
 
     let cards = new CardStack("cardTop.jpg", 10);
     this.cards_ = cards.createGeometry();
@@ -94,8 +96,8 @@ class Game {
 
   };
 
-  shuffleCards = () =>{
-    
+  shuffleCards = (card) =>{
+    this.randomCardPlayer1 = `${card}.jpg`
     let yourCard = new CardStack("../cards/" + this.randomCardPlayer1, 1);
     let yourCard_ = yourCard.createGeometry();
     yourCard_.position.set(0, 0, -104);
@@ -132,7 +134,7 @@ class Game {
         .onUpdate(() => { })
         .onComplete(() => { })
         .start();
-    }, 1250);
+    }, 100);
 
   }
 
@@ -304,6 +306,5 @@ class Game {
   editGame = () =>{
     this.started = !this.started
   }
-
-
+  
 }
