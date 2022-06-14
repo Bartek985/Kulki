@@ -99,6 +99,7 @@ class Game {
   };
 
   shuffleCards = (card) =>{
+    this.myCard = card
     this.randomCardPlayer1 = `${card}.jpg`
     let yourCard = new CardStack("../cards/" + this.randomCardPlayer1, 1);
     let yourCard_ = yourCard.createGeometry();
@@ -199,7 +200,7 @@ class Game {
                 this.piecesOnBoard[indeX2][indeZ2] = clickedItem.userData.colorValue;
                 this.move += 1;//zniana, kolej drugiego gracza
                 console.log("ruch nr." + this.move, this.piecesOnBoard);
-                socket.emit('moveWasMade', this.piecesOnBoard, this.move);
+                socket.emit('moveWasMade', this.piecesOnBoard, this.move, this.myCard);
               }
               else{
                 console.log("bug handled");
@@ -271,7 +272,7 @@ class Game {
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
-              socket.emit('moveWasMade', this.piecesOnBoard, this.move);
+              socket.emit('moveWasMade', this.piecesOnBoard, this.move, this.myCard);
             } if ((indeX == 0 && this.piecesOnBoard[indeX + 1][indeZ] > 0) || (indeX == 6 && this.piecesOnBoard[indeX - 1][indeZ] > 0) || (indeZ == 0 && this.piecesOnBoard[indeX][indeZ + 1] > 0) || (indeZ == 6 && this.piecesOnBoard[indeX][indeZ - 1] > 0) && (this.currentClicked.object.position.x != clickedItem.position.x || this.currentClicked.object.position.z != clickedItem.position.z)) {
               new TWEEN.Tween(this.camera.position) // co
                 .to({ x: 240, y: 240 }, 750) // do jakiej pozycji, w jakim czasie
@@ -290,7 +291,7 @@ class Game {
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
-              socket.emit('moveWasMade', this.piecesOnBoard, this.move);
+              socket.emit('moveWasMade', this.piecesOnBoard, this.move, this.myCard);
             }
           }
         }

@@ -4,6 +4,13 @@ var PORT = process.env.PORT || 3000;
 app.use(express.text());
 app.use(express.static("static"));
 
+const Datastore = require('nedb')
+
+const coll1 = new Datastore({
+    filename: 'kolekcja.db',
+    autoload: true
+});
+
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -37,11 +44,39 @@ app.get("/", function (req, res) {
   res.send("index.html");
 });
 
+app.get('/connection', function(req,res){
+  doc = {
+    name: req.query.name,
+    v1: req.query.v1,
+    v2: req.query.v2,
+    v3: req.query.v3,
+    v4: req.query.v4,
+    v5: req.query.v5,
+    v6: req.query.v6,
+    color: req.query.color
+  }
+  coll1.insert(doc, function (err, newDoc) {
+    console.log("dodano dokument (obiekt):")
+    console.log(newDoc)
+    console.log("losowe id dokumentu: "+newDoc._id)
+  });
+})
+
+app.get('/delete', function(req,res){
+    coll1.remove({}, { multi: true }, function (err, numRemoved) {
+       console.log("usunięto wszystkie dokumenty: ",numRemoved)  
+    });
+})
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('moveWasMade', (tab, move) => {
+  socket.on('moveWasMade', (tab, move, card) => {
     console.log('Move');
+    coll1.findOne({ name: card }, function (err, doc) {
+      console.log("----- obiekt pobrany z bazy: ",doc)
+      console.log("----- formatowanie obiektu js na format JSON: ")
+      console.log(JSON.stringify(doc, null, 5))
+      });
     io.emit('moveReturned', tab, move)
   });
 });
