@@ -48,6 +48,7 @@ class Game {
     this.bugIndeZ = null;
     this.buggedColor = null;
     this.started = false;
+    this.onBoard = []
 
 
     //this.player1turn = true;
@@ -64,7 +65,7 @@ class Game {
 
     for (let i = 0; i < 7; i++) {
       for (let j = 0; j < 7; j++) {
-        var tile = new BoardTile();
+        let tile = new BoardTile();
         let cube = tile.createGeometry();
         cube.position.set(-48 + i * 16, 0, -48 + j * 16);
         //this.scene.remove(cube);
@@ -77,8 +78,8 @@ class Game {
     light1.intensity = 0.9;
     this.scene.add(light1);
 
-    var BlackSphere = new Piece(6);
-    var black = BlackSphere.createGeometry();
+    let BlackSphere = new Piece(6);
+    let black = BlackSphere.createGeometry();
     black.userData = { colorValue: 6 };
     black.position.set(0, 5, 0);
     this.scene.add(black);
@@ -143,7 +144,7 @@ class Game {
 
     for (let i = 0; i < this.pieces.length; i++) {
       for (let j = 0; j < this.pieces[i].length; j++) {
-        var piece = new Piece(this.pieces[i][j]);
+        let piece = new Piece(this.pieces[i][j]);
         //piece.userData = { colorValue: this.pieces[i][j] };
         let cube = piece.createGeometry();
         cube.userData = { colorValue: this.pieces[i][j] };
@@ -190,11 +191,13 @@ class Game {
               if ((Math.abs(indeX - indeX2) == 1 && Math.abs(indeZ - indeZ2) == 0) || (Math.abs(indeZ - indeZ2) == 1 && Math.abs(indeX - indeX2) == 0)) {
                 console.log("mozna zamienic");
                 this.currentClicked.object.position.set(indeX * 16 - 48, 5, (6 - indeZ) * 16 - 48);
+                this.onBoard.push(this.currentClicked.object)
                 this.piecesOnBoard[indeX][indeZ] = this.currentClicked.object.userData.colorValue;
                 clickedItem.position.set(indeX2 * 16 - 48, 5, (6 - indeZ2) * 16 - 48);
                 this.piecesOnBoard[indeX2][indeZ2] = clickedItem.userData.colorValue;
                 this.move += 1;//zniana, kolej drugiego gracza
                 console.log("ruch nr." + this.move, this.piecesOnBoard);
+                socket.emit('moveWasMade', this.piecesOnBoard);
               }
               else{
                 console.log("bug handled");
@@ -259,12 +262,14 @@ class Game {
                 })
                 .start();
               this.currentClicked.object.position.set(clickedItem.position.x, 5, clickedItem.position.z);
+              this.onBoard.push(this.currentClicked.object)
               this.piecesOnBoard[indeX][indeZ] = this.currentClicked.object.userData.colorValue;
               this.currentClicked.object.material.color.setHex(0xffffff);
               this.currentClicked.type = "board";
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
+              socket.emit('moveWasMade', this.piecesOnBoard);
             } if ((indeX == 0 && this.piecesOnBoard[indeX + 1][indeZ] > 0) || (indeX == 6 && this.piecesOnBoard[indeX - 1][indeZ] > 0) || (indeZ == 0 && this.piecesOnBoard[indeX][indeZ + 1] > 0) || (indeZ == 6 && this.piecesOnBoard[indeX][indeZ - 1] > 0) && (this.currentClicked.object.position.x != clickedItem.position.x || this.currentClicked.object.position.z != clickedItem.position.z)) {
               new TWEEN.Tween(this.camera.position) // co
                 .to({ x: 240, y: 240 }, 750) // do jakiej pozycji, w jakim czasie
@@ -276,12 +281,14 @@ class Game {
                 })
                 .start();
               this.currentClicked.object.position.set(clickedItem.position.x, 5, clickedItem.position.z);
+              this.onBoard.push(this.currentClicked.object)
               this.piecesOnBoard[indeX][indeZ] = this.currentClicked.object.userData.colorValue;
               this.currentClicked.object.material.color.setHex(0xffffff);
               this.currentClicked.type = "board";
               this.currentClicked.object = clickedItem;
               this.move += 1;//zniana, kolej drugiego gracza
               console.log("ruch nr." + this.move, this.piecesOnBoard);
+              socket.emit('moveWasMade', this.piecesOnBoard);
             }
           }
         }
@@ -305,6 +312,32 @@ class Game {
   };
   editGame = () =>{
     this.started = !this.started
+  }
+
+  regenerate = (tab)=>{
+    this.onBoard.forEach((elem)=>{
+      this.scene.remove(elem)
+    })
+
+    this.piecesOnBoard = tab
+
+    
+    for (let i = 0; i < this.piecesOnBoard.length; i++) {
+      for (let j = 0; j < this.piecesOnBoard[i].length; j++) {
+        if(this.piecesOnBoard[i][j]!=0){
+          console.log(this.piecesOnBoard[i][j])
+          let piece = new Piece(this.piecesOnBoard[i][j]);
+          let cube = piece.createGeometry();
+          cube.userData = { colorValue: this.piecesOnBoard[i][j] };
+          if (cube != null) {
+            cube.position.set(-48 + i * 16, 5, -48 + (6-j) * 16);
+            this.scene.add(cube);
+          }
+
+        }
+      }
+    }
+
   }
   
 }

@@ -29,6 +29,12 @@
     game.editGame()
     ui.showStart()
   });
+
+  socket.on('moveReturned', function(tab){
+    console.log("Move returned")
+    console.log(tab)
+    game.regenerate(tab)
+  })
 </script>
 
 <body>

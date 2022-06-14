@@ -39,6 +39,10 @@ app.get("/", function (req, res) {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+  socket.on('moveWasMade', (tab) => {
+    console.log('Move');
+    io.emit('moveReturned', tab)
+  });
 });
 
 app.post("/LOG_IN", function (req,res) {

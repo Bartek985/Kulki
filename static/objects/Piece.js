@@ -50,7 +50,7 @@ class Piece {
         });
 
 
-        var cube;
+        let cube;
         //cube.userData = { colorValue: this._color };  //nie dziala-----error
         switch (this._color) {
             case 0:
