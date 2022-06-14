@@ -21,11 +21,21 @@
 
 <body>
   <div id="root"></div>
+  <div id="login">
+    <div id="login-title">Zaloguj się</div>
+    <input id="login-name" class="margin" type="text"/>
+    <button id="login-confirm" class="btn margin" onclick="net.handleLogIn()">Loguj</button>
+    <button id="login-reset" class="btn margin">Reset</button>
+  </div>
 </body>
 <script>
-  //window.addEventListener("resize", (e) => {
-  //  game.resize()
-  //})
+
+  window.addEventListener("mousedown", (e) => {
+    game.clickOnSth(e);
+  });
+  window.addEventListener("resize", (e) => {
+   game.resize()
+  })
 
 
   //nie dziala------------------------------------------------------------------------------

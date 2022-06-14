@@ -4,7 +4,7 @@ class Table {
     }
 
     createGeometry = () => {
-        const geometry = new THREE.PlaneGeometry(800, 800, 50, 50);
+        const geometry = new THREE.PlaneGeometry(1600, 1600, 50, 50);
         const texture = new THREE.TextureLoader().load("../textures/materials/wood.jpg");
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
