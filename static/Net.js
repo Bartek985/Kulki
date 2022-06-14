@@ -22,6 +22,11 @@ class Net {
               }
             } // dane odpowiedzi z serwera
          );
-         }
+    }
+
+    handleReset = () => {
+      const body = JSON.stringify({ reset: true }); // body czyli przesyłane na serwer dane
+      fetch("/RESET", { method: "post", body }) // fetch
+    }
 }
   

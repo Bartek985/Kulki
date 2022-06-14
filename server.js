@@ -61,6 +61,12 @@ app.post("/LOG_IN", function (req,res) {
   }
 })
 
+app.post('/RESET', (req,res)=>{
+  usersTab = []
+  cards = ["blue1", "blue2", "blue3", "blue4","red1", "red2", "red3", "red4","green1", "green2", "green3", "green4","orange1", "orange2", "orange3", "orange4"];
+  res.end()
+})
+
 server.listen(PORT, function () {
   console.log("start serwera na porcie " + PORT);
 });
