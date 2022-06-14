@@ -4,6 +4,11 @@ var PORT = process.env.PORT || 3000;
 app.use(express.text());
 app.use(express.static("static"));
 
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 let usersTab = []
 let cards = ["blue1", "blue2", "blue3", "blue4","red1", "red2", "red3", "red4","green1", "green2", "green3", "green4","orange1", "orange2", "orange3", "orange4"];
 function shuffle(array) {
@@ -28,6 +33,11 @@ app.get("/", function (req, res) {
   res.send("index.html");
 });
 
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+});
+
 app.post("/LOG_IN", function (req,res) {
   let obj = JSON.parse(req.body)
   let user = obj.user
@@ -45,9 +55,12 @@ app.post("/LOG_IN", function (req,res) {
     shuffle(cards)
     res.send(JSON.stringify({error: "none", card: cards[cards.length-1], user: user}))
     cards.pop()
+    if(usersTab.length == 2){
+      io.emit('gameStarted', "LOL");
+    }
   }
 })
 
-app.listen(PORT, function () {
+server.listen(PORT, function () {
   console.log("start serwera na porcie " + PORT);
 });

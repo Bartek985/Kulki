@@ -301,6 +301,9 @@ class Game {
     //console.log("render leci, taborecik");
     TWEEN.update(); //--------- animacja
   };
+  editGame = () =>{
+    this.started = !this.started
+  }
 
 
 }

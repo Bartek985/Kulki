@@ -7,7 +7,19 @@ class Net {
           .then((response) => response.json())
           .then(
             (data) => {
-              console.log(data);
+              console.log(data.error);
+              if(data.error == "none"){
+                ui.hideLogin()
+              }
+              else if(data.error == "many"){
+                ui.showErrorMany()
+              }
+              else if(data.error == "repeat"){
+                ui.showErrorRepeat()
+              }
+              else if(data.error == "empty"){
+                ui.showErrorEmpty()
+              }
             } // dane odpowiedzi z serwera
          );
          }

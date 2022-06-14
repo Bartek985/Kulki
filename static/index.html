@@ -19,6 +19,18 @@
   <title>Kulki</title>
 </head>
 
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+
+  
+  socket.on('gameStarted', function(msg) {
+    console.log("Game started")
+    game.editGame()
+    ui.showStart()
+  });
+</script>
+
 <body>
   <div id="root"></div>
   <div id="login">
@@ -27,7 +39,23 @@
     <button id="login-confirm" class="btn margin" onclick="net.handleLogIn()">Loguj</button>
     <button id="login-reset" class="btn margin">Reset</button>
   </div>
+  <div id="error-empty" class="info">
+    Username cannot be empty
+  </div>
+  <div id="error-repeat" class="info">
+    Username already taken
+  </div>
+  <div id="error-many" class="info">
+    There are already two players in game
+  </div>
+  <div id="waiting" class="info">
+    Waiting for opponent to join
+  </div>
+  <div id="start-info" class="info">
+    Game started
+  </div>
 </body>
+
 <script>
 
   window.addEventListener("mousedown", (e) => {
