@@ -323,7 +323,7 @@ class Game {
     })
 
     this.piecesOnBoard = tab
-
+    this.onBoard = []
     
     for (let i = 0; i < this.piecesOnBoard.length; i++) {
       for (let j = 0; j < this.piecesOnBoard[i].length; j++) {
@@ -335,6 +335,7 @@ class Game {
           if (cube != null) {
             cube.position.set(-48 + i * 16, 5, -48 + (6-j) * 16);
             this.scene.add(cube);
+            this.onBoard.push(cube)
           }
 
         }
